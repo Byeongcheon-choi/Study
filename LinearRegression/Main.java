@@ -3,12 +3,17 @@ package LinearRegression;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
+import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -17,26 +22,28 @@ import java.util.Map.Entry;
 public class Main extends ApplicationFrame {
 
 	int index = 0;
-	int Fnumber = 10;
+	int Fnumber = 100;
 	int x;
 	int y;
-	public double cost;
+	public double Cost;
 	public double W;
 	public double b;
 	
 	public static void main(final String[] args) {
 		
 		   Main demo = new Main("Linear Regression");
-		   demo.pack();
-		   RefineryUtilities.centerFrameOnScreen(demo);
-		   demo.setVisible(true);
 		
 		}
 
 		public Main(String title) {
 		
 		   super(title);
-		   XYSeries series = new XYSeries("Data Plot");
+		   
+		   XYSeriesCollection data = new XYSeriesCollection();
+		   XYSeries dataset = new XYSeries("Data");
+		   XYSeriesCollection linear = new XYSeriesCollection();
+		   XYSeries Line = new XYSeries("Linear Regression Line");
+		   
 		   Map<Integer, Integer> Data = new HashMap<>(); 
 		   
 		   for(index =0 ; index < Fnumber ; index++)
@@ -44,24 +51,43 @@ public class Main extends ApplicationFrame {
 			   x = (int)(Math.random()*100);
 			   y = (int)(Math.random()*100);
 			   Data.put(x,y);
-			   series.add(x,y);
+			   dataset.add(x,y);
 		   }
+		   
+		   data.addSeries(dataset);
+		 
 		   
 		   Fomula(Data,Fnumber);
 		   
-		   XYSeriesCollection data = new XYSeriesCollection(series);
-		   JFreeChart chart = ChartFactory.createScatterPlot(
-		       "Linear Regression", "X", "Y", data,
-		       PlotOrientation.VERTICAL,
-		       true,
-		       true,
-		       false
-		   );
-		
-		   ChartPanel chartPanel = new ChartPanel(chart);
-		   chartPanel.setPreferredSize(new java.awt.Dimension(1280, 720));
-		   setContentPane(chartPanel);
-		
+		   double Lpint = W*100+b;
+		   
+		   Line.add(0,b);
+		   Line.add(100,Lpint);
+		   
+		   linear.addSeries(Line);
+		   
+		   XYPlot plot = new XYPlot(); 
+ 
+		   XYDataset scatterPlotDataset = data;
+	           plot.setDataset(0, scatterPlotDataset);
+	           plot.setRenderer(0, new XYLineAndShapeRenderer(false, true));
+	           plot.setDomainAxis(0, new NumberAxis("Y"));
+	           plot.setRangeAxis(0, new NumberAxis("X"));
+	           plot.mapDatasetToDomainAxis(0, 0);
+	           plot.mapDatasetToRangeAxis(0, 0);
+
+
+	           XYDataset functionDataset = linear;
+	           plot.setDataset(1, functionDataset);
+	           plot.setRenderer(1, new XYLineAndShapeRenderer(true, false));
+
+	           JFreeChart chart = new JFreeChart("Function of Y over scatter plot", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+	           ChartPanel chartPanel = new ChartPanel(chart);
+	           chartPanel.setPreferredSize(new Dimension(500, 270));
+	           ApplicationFrame frame = new ApplicationFrame("Example");
+	           frame.setContentPane(chartPanel);	   
+	           frame.pack();
+		   frame.setVisible(true);
 		}
 		
 		public void Fomula(Map<Integer,Integer> Data, int Fnumber){
@@ -91,7 +117,9 @@ public class Main extends ApplicationFrame {
 			SUMc = Xx * Yy;
 			
 			W = (Fnumber*SUMa - SUMc) / (Fnumber*SUMb - SUMd);
-			b = (Yy -Xx * W)/Fnumber; 
+			b = (Yy -Xx * W)/Fnumber;
+			System.out.println(W + "" +b);
 		}
+		
 
 }

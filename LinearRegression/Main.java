@@ -25,13 +25,12 @@ public class Main extends ApplicationFrame {
 	int Fnumber = 100;
 	int x;
 	int y;
-	public double Cost;
 	public double W;
 	public double b;
 	
 	public static void main(final String[] args) {
 		
-		   Main demo = new Main("Linear Regression");
+		   Main demo = new Main("Linear Regression"); 
 		
 		}
 
@@ -44,9 +43,9 @@ public class Main extends ApplicationFrame {
 		   XYSeriesCollection linear = new XYSeriesCollection();
 		   XYSeries Line = new XYSeries("Linear Regression Line");
 		   
-		   Map<Integer, Integer> Data = new HashMap<>(); 
+		   Map<Integer, Integer> Data = new HashMap<>(); // Define X, Y collidination
 		   
-		   for(index =0 ; index < Fnumber ; index++)
+		   for(index =0 ; index < Fnumber ; index++) // collect the random data
 		   {
 			   x = (int)(Math.random()*100);
 			   y = (int)(Math.random()*100);
@@ -57,12 +56,12 @@ public class Main extends ApplicationFrame {
 		   data.addSeries(dataset);
 		 
 		   
-		   Fomula(Data,Fnumber);
+		   Fomula(Data,Fnumber); 		// Create the method for making the Linear Regression Fomula
 		   
 		   double Lpint = W*100+b;
 		   
-		   Line.add(0,b);
-		   Line.add(100,Lpint);
+		   Line.add(0,b);			// Add Initail point 
+		   Line.add(100,Lpint);			// Add Final point.
 		   
 		   linear.addSeries(Line);
 		   
@@ -90,7 +89,7 @@ public class Main extends ApplicationFrame {
 		   frame.setVisible(true);
 		}
 		
-		public void Fomula(Map<Integer,Integer> Data, int Fnumber){
+		public void Fomula(Map<Integer,Integer> Data, int Fnumber){		//Define the Linear Regression Fomula.
 			int SUMa = 0;
 			int SUMb = 0;
 			int SUMc = 0;
@@ -103,7 +102,7 @@ public class Main extends ApplicationFrame {
 			while(keys.hasNext())
 			{
 				int key = keys.next();
-				SUMa += key*Data.get(key); 
+				SUMa += key*Data.get(key); 			
 				SUMb += Math.pow(key,2);
 			}
 			

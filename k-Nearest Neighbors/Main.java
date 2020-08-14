@@ -14,6 +14,9 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 import java.awt.Dimension;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -21,66 +24,35 @@ import java.util.Map.Entry;
 
 public class Main extends ApplicationFrame {
 
-	int index = 0;
-	int Fnumber = 100;
-	int x;
-	int y;
-	public double Cost;
-	public double W;
-	public double b;
+	private final int Fnumber = 10;
+	private final int k = 3;
+	Map<int[], String> Data = new HashMap<>();
+	private int[] point = {50,40};
+	
 	
 	public static void main(final String[] args) {
 		
-		   Main demo = new Main("Linear Regression");
+		   Main demo = new Main("K-nearest Neighbors");
 		
 		}
 
 		public Main(String title) {
 		
-		   super(title);
+	       super(title);
+               XYPlot plot = new XYPlot(); 
+	       XYDataset scatterPlotDataset = MakingDataset();
 		   
-		   XYSeriesCollection data = new XYSeriesCollection();
-		   XYSeries dataset = new XYSeries("Data");
-		   XYSeriesCollection linear = new XYSeriesCollection();
-		   XYSeries Line = new XYSeries("Linear Regression Line");
+	       Fomula(Data,Fnumber, point);
 		   
-		   Map<Integer, Integer> Data = new HashMap<>(); 
-		   
-		   for(index =0 ; index < Fnumber ; index++)
-		   {
-			   x = (int)(Math.random()*100);
-			   y = (int)(Math.random()*100);
-			   Data.put(x,y);
-			   dataset.add(x,y);
-		   }
-		   
-		   data.addSeries(dataset);
-		 
-		   
-		   Fomula(Data,Fnumber);
-		   
-		   double Lpint = W*100+b;
-		   
-		   Line.add(0,b);
-		   Line.add(100,Lpint);
-		   
-		   linear.addSeries(Line);
-		   
-		   XYPlot plot = new XYPlot(); 
- 
-		   XYDataset scatterPlotDataset = data;
 	       plot.setDataset(0, scatterPlotDataset);
 	       plot.setRenderer(0, new XYLineAndShapeRenderer(false, true));
-	       plot.setDomainAxis(0, new NumberAxis("Y"));
-	       plot.setRangeAxis(0, new NumberAxis("X"));
+	       plot.setDomainAxis(0, new NumberAxis("Age"));
+	       plot.setRangeAxis(0, new NumberAxis("Number of Thumbs up"));
 	       plot.mapDatasetToDomainAxis(0, 0);
 	       plot.mapDatasetToRangeAxis(0, 0);
 
 
-	       XYDataset functionDataset = linear;
-	       plot.setDataset(1, functionDataset);
-	       plot.setRenderer(1, new XYLineAndShapeRenderer(true, false));
-
+	
 	       JFreeChart chart = new JFreeChart("Function of Y over scatter plot", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
 	       ChartPanel chartPanel = new ChartPanel(chart);
 	       chartPanel.setPreferredSize(new Dimension(500, 270));
@@ -90,35 +62,74 @@ public class Main extends ApplicationFrame {
 	       frame.setVisible(true);
 		}
 		
-		public void Fomula(Map<Integer,Integer> Data, int Fnumber){
-			int SUMa = 0;
-			int SUMb = 0;
-			int SUMc = 0;
-			int SUMd = 0;
-
-			int Xx = 0;
-			int Yy = 0;
+		public XYDataset MakingDataset() {
+			XYSeriesCollection data = new XYSeriesCollection();
 			
-			Iterator<Integer> keys = Data.keySet().iterator();
-			while(keys.hasNext())
-			{
-				int key = keys.next();
-				SUMa += key*Data.get(key); 
-				SUMb += Math.pow(key,2);
-			}
+			XYSeries dataset = new XYSeries("Like Hyundai");
+			XYSeries dataset1 = new XYSeries("Like Tesla");
+			XYSeries dataset2 = new XYSeries("Sample");
 			
-			for(Entry<Integer, Integer> Fdata : Data.entrySet())
-			{
-				Xx += Fdata.getKey();
-				Yy += Fdata.getValue();
-			}
 			
-			SUMc =  (int)Math.pow(Xx,2);
-			SUMc = Xx * Yy;
+			for(int index =0 ; index < Fnumber ; index++)
+			   {
+				   int s = (int)(Math.random()*100);
+				   int j = (int)(Math.random()*100);
+				   int[] f = {s,j};
+				   Data.put(f,"Hyundai");
+				   dataset.add(s,j);
+			   }
+			data.addSeries(dataset);
 			
-			W = (Fnumber*SUMa - SUMc) / (Fnumber*SUMb - SUMd);
-			b = (Yy -Xx * W)/Fnumber;
-			System.out.println(W + "" +b);
+			for(int index =0 ; index < Fnumber ; index++)
+			   {
+				   int s = (int)(Math.random()*100);
+				   int j = (int)(Math.random()*100);
+				   int[] f = {s,j};
+				   Data.put(f,"Tesla");
+				   dataset.add(s,j);
+			   }
+			data.addSeries(dataset1);
+			
+			dataset.add(point[0],point[1]);
+			data.addSeries(dataset2);
+			
+			return data;
+		}			
+	
+		public void Fomula(Map<int[], String> Data, int K, int[] point){
+			    Map<Double, String> D = new HashMap<>();
+			    ArrayList distance = new ArrayList();
+				double d = 0;
+				int l =0;
+				int o =0;
+				for(int[] key : Data.keySet())
+				{
+					d = Math.pow((key[0]-point[0]),2) + Math.pow((key[1]-point[1]),2);
+					D.put(d,Data.get(key));
+					distance.add(d);
+				}
+				
+				Collections.sort(distance);
+				for(int i = 0; i< K ; i ++)
+				{
+					if(D.get(distance.get(i)).equals("Hyundai"))
+					{
+						l +=1;
+					}
+					else if(D.get(distance.get(i)).equals("Tesla"))
+					{
+						o +=1;
+					}
+				}
+				
+				if(l>o)
+				{
+					System.out.println("Hyundai");
+				}
+				else
+				{
+					System.out.println("Tesla");
+				}
 		}
 		
 

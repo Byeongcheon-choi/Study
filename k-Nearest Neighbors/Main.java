@@ -102,15 +102,15 @@ public class Main extends ApplicationFrame {
 				double d = 0;
 				int l =0;
 				int o =0;
-				for(int[] key : Data.keySet())
+				for(int[] key : Data.keySet())					
 				{
-					d = Math.pow((key[0]-point[0]),2) + Math.pow((key[1]-point[1]),2);
-					D.put(d,Data.get(key));
-					distance.add(d);
+					d = Math.pow((key[0]-point[0]),2) + Math.pow((key[1]-point[1]),2);		//Distance between the point and data
+					D.put(d,Data.get(key));								//Put the distance value and string value in New HashMap 
+					distance.add(d);						//For ordering the distance, Add the distance value in Arraylist 
 				}
 				
-				Collections.sort(distance);
-				for(int i = 0; i< K ; i ++)
+				Collections.sort(distance);		//ordering it.
+				for(int i = 0; i< K ; i ++)		//By using the user setting(k), Decide how many 
 				{
 					if(D.get(distance.get(i)).equals("Hyundai"))
 					{
@@ -122,7 +122,7 @@ public class Main extends ApplicationFrame {
 					}
 				}
 				
-				if(l>o)
+				if(l>o)						//Decision that the point is Hyundai or Tesla
 				{
 					System.out.println("Hyundai");
 				}

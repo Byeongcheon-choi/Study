@@ -86,11 +86,11 @@ public class Main extends ApplicationFrame {
 				   int j = (int)(Math.random()*100);
 				   int[] f = {s,j};
 				   Data.put(f,"Tesla");
-				   dataset.add(s,j);
+				   dataset1.add(s,j);
 			   }
 			data.addSeries(dataset1);
 			
-			dataset.add(point[0],point[1]);
+			dataset2.add(point[0],point[1]);
 			data.addSeries(dataset2);
 			
 			return data;

@@ -1,4 +1,4 @@
-package LinearRegression;
+package KnearestNeighbor;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;

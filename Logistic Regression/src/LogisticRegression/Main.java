@@ -65,8 +65,8 @@ public class Main extends ApplicationFrame {
 		public XYDataset MakingDataset() {
 			XYSeriesCollection data = new XYSeriesCollection();
 			
-			XYSeries dataset = new XYSeries("Like");
-			XYSeries dataset1 = new XYSeries("Hate/Love");		
+			XYSeries dataset = new XYSeries("Love");
+			XYSeries dataset1 = new XYSeries("Hate");		
 			XYSeries dataset2 = new XYSeries("result");
 			
 			for(int index =0 ; index < Fnumber ; index++)
@@ -129,8 +129,9 @@ public class Main extends ApplicationFrame {
 				
 				double result  = (1/(1+Math.pow(Math.E, -(a*point-b))));
 				
-				if(result >= 0.5) return 1;
-				else return 0;			
+				if(result >= 0.5) Systme.out.println("Love")
+				else System.out.println("Hate");
+			return result;
 		}
 	
 

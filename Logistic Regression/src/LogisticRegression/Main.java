@@ -1,5 +1,6 @@
 package LogisticRegression;
 
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -25,9 +26,9 @@ import java.util.Map.Entry;
 public class Main extends ApplicationFrame {
 
 	private final int Fnumber = 10;
-	private final int k = 3;
-	Map<Integer, Integer> Data = new HashMap<>();
-	private int point = 80;
+	Map<Integer,Integer> Data = new HashMap<>();
+	private final int interator = 100;
+	private final int point = 5;
 	
 	public static void main(final String[] args) {
 		
@@ -37,12 +38,11 @@ public class Main extends ApplicationFrame {
 
 		public Main(String title) {
 		
-	       super(title);
-         
-	       XYPlot plot = new XYPlot(); 
-	       XYDataset scatterPlotDataset = MakingDataset();
+		   super(title);
+
+		   XYPlot plot = new XYPlot(); 
+		   XYDataset scatterPlotDataset = MakingDataset();
 		   
-	       
 		   
 	       plot.setDataset(0, scatterPlotDataset);
 	       plot.setRenderer(0, new XYLineAndShapeRenderer(false, true));
@@ -50,7 +50,6 @@ public class Main extends ApplicationFrame {
 	       plot.setRangeAxis(0, new NumberAxis("Number of Thumbs up"));
 	       plot.mapDatasetToDomainAxis(0, 0);
 	       plot.mapDatasetToRangeAxis(0, 0);
-
 
 	
 	       JFreeChart chart = new JFreeChart("Function of Y over scatter plot", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
@@ -65,74 +64,71 @@ public class Main extends ApplicationFrame {
 		public XYDataset MakingDataset() {
 			XYSeriesCollection data = new XYSeriesCollection();
 			
-			XYSeries dataset = new XYSeries("Love");
-			XYSeries dataset1 = new XYSeries("Hate");		
-			XYSeries dataset2 = new XYSeries("result");
+			XYSeries dataset = new XYSeries("Hate");
+			XYSeries dataset1 = new XYSeries("Like");
+			XYSeries dataset2 = new XYSeries("Sample");
+			
 			
 			for(int index =0 ; index < Fnumber ; index++)
 			   {
-				   int s = (int)(Math.random()*100);
-				   int j = 1;
+				   int s = index;
+				   int j = 0;
+				  
 				   Data.put(s,j);
 				   dataset.add(s,j);
 			   }
 			data.addSeries(dataset);
 			
-			for(int index =0 ; index < Fnumber ; index++)
+			for(int index =10 ; index < Fnumber+10 ; index++)
 			   {
-				   int s = (int)(Math.random()*100);
-				   int j = 0;		 
+				   int s = index;
+				   int j = 1;
+				
 				   Data.put(s,j);
 				   dataset1.add(s,j);
 			   }
 			data.addSeries(dataset1);
 			
-			Fomula(Data,point); 
-			
-			dataset2.add(point,Fomula(Data,Fnumber));
+			dataset2.add(point,Fomula(Data,point));
 			data.addSeries(dataset2);
 			return data;
 		}			
-	
-		public int Fomula(Map<Integer,Integer> Data, int point){
-				double a = 0;
-				double b = 0;
-				double error = 0.1;
-				double cost = 0;
-				
-				double CostA = 0;
-				double CostB = 0;		
-				
-			    Iterator<Integer> keys = Data.keySet().iterator();
-			    while(keys.hasNext())
-				{
-			    	 int key = keys.next();
-					 
-			    	 CostA = Data.get(key)*Math.pow(Math.E, b-a*key)/((Math.pow(Math.pow(Math.E, b-a*key)+1, 2))*(1-(1/(1-(1/(Math.pow(Math.E, b-a*key)))))))- Data.get(key)*Math.pow(Math.E, b-a*key)/(Math.pow(Math.E, b-a*key)+1);
-					 CostB =(key*(( Data.get(key)-1)*Math.pow(Math.E, a*key)+Math.pow(Math.E,b)* Data.get(key)))/(Math.pow(Math.E,a*key)+Math.pow(Math.E, b));
-				     
-				     
-				     cost = Data.get(key)*Math.log((1/(1+Math.pow(Math.E, -(a*key-b))))) - (1-Data.get(key))*Math.log((1-(1/(1+Math.pow(Math.E, -(a*key-b))))));			     
-				     if(cost == 0)
-				     {
-				    	 System.out.print(cost);
-				    	 break;
-				     }
-				     else {
-				    	 a =  a - error*CostA;
-					     b =  b - error*CostB;
-					     System.out.println( a + "" + b);
-				    	 
-				     }
-				     
-				}
-				
-				double result  = (1/(1+Math.pow(Math.E, -(a*point-b))));
-				
-				if(result >= 0.5) Systme.out.println("Love")
-				else System.out.println("Hate");
+		
+		public double Sigmoid(double value)
+		{
+			double result = 1/(1+Math.exp(-value));
 			return result;
 		}
-	
-
+		
+		public double Fomula(Map<Integer, Integer> Data, int k){
+				double a = 0;
+				double b = 0;
+				int number = 20;
+				
+				double F_result = Sigmoid()
+				double sum =0;
+				double da = 0;
+				double db = 0;
+				double logit = .0;
+				
+				for (int i=0; i<weights.length;i++)  {
+					logit += weights[i] * Data.get(i);
+				}
+				double result = (1/(1+Math.exp(logit)));
+				
+				for(int i = 0; i < interator ; i++)
+				{
+						
+					for(Entry<Integer,Integer> drivate : Data.entrySet())
+					{
+						
+						for (int j=0; j<weights.length; j++) {
+							weights[j] = weights[j] + 0.0001 * (drivate.getValue() - result) * drivate.getKey();
+						}
+					}
+						
+				}
+				
+				return (1/(1+Math.exp(-(a*k+b))));
+		}
 }

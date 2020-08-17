@@ -89,7 +89,7 @@ public class Main extends ApplicationFrame {
 			   }
 			data.addSeries(dataset1);
 			
-			dataset2.add(point,Fomula(Data,point));
+//			dataset2.add(point,Fomula(Data,point));
 			data.addSeries(dataset2);
 			return data;
 		}			
@@ -99,36 +99,97 @@ public class Main extends ApplicationFrame {
 			double result = 1/(1+Math.exp(-value));
 			return result;
 		}
+		public double Dotproduct(double[] a, double[] b)
+		{
+			double sum = 0;
+			for(int i = 0; i< 20; i++)
+			{
+				sum += a[i] + b[i];
+			}
+			return sum;
+		}
+		public double[] YtransCalculator(double a, double[] b) {
+			double[] result = new double[20];
+			for(int n = 0; n< 20;n++)
+			{
+				result[n] = a - b[n];
+			}
+			
+			return result;
+			
+		}
 		
-		public double Fomula(Map<Integer, Integer> Data, int k){
-				double a = 0;
+		public double[] Fomula(Map<Integer, Integer> Data){
+				double a[] = new double[20];
 				double b = 0;
 				int number = 20;
-				
-				double F_result = Sigmoid()
-				double sum =0;
+				double[] x = new double[20];
+				double[] y = new double[20];
+				double[] p = new double[20];
+				double[] result = new double[3];
 				double da = 0;
-				double db = 0;
-				double logit = .0;
+				double db =0;
 				
-				for (int i=0; i<weights.length;i++)  {
-					logit += weights[i] * Data.get(i);
-				}
-				double result = (1/(1+Math.exp(logit)));
-				
-				for(int i = 0; i < interator ; i++)
+				for(Entry<Integer,Integer> arr : Data.entrySet())
 				{
-						
-					for(Entry<Integer,Integer> drivate : Data.entrySet())
-					{
-						
-						for (int j=0; j<weights.length; j++) {
-							weights[j] = weights[j] + 0.0001 * (drivate.getValue() - result) * drivate.getKey();
-						}
-					}
-						
+					int i =0;
+					x[i] = arr.getKey();
+					y[i] = arr.getValue();
+					i++;
+				}
+				double F_result = Sigmoid(Dotproduct(x,a)+b);
+				double cost = 0;
+				double sum1 = 0;
+				for(int j = 0 ; j < a.length ; j++)
+				{
+					sum1 += (y[j]*Math.log(F_result)+(1-y[j]*Math.log(1-F_result)));
 				}
 				
-				return (1/(1+Math.exp(-(a*k+b))));
+				cost = - sum1/number;
+				
+				
+				da = Dotproduct(x, YtransCalculator(F_result,y)) / number;
+				p = YtransCalculator(F_result,y);
+				double sum2 =0;
+				for(int i=0; i< 20 ; i++)
+				{
+					sum2 += p[i];
+				}
+				db = sum2/number;
+				
+				result[0] = da;
+				result[1] = db;
+				result[2] = cost;
+				return result;
+						
 		}
+		public double[] learningfomual(double[] result) {
+			double w = 0;
+			double b = 0;
+			for(int k =0; k < interator ; k++) {
+				double value[] = new double[3];
+				value = Fomula(Data);
+				
+				
+				w = w -(0.0001*value[0]);
+				b = b -(0.0001*value[1]);
+				
+			}
+			double[] equ = new double[2];
+			equ[0] = w;
+			equ[1] = b;
+			return equ;
+		}
+		
+		public void result(Map<Integer, Integer> Data, int point) {
+			double[] result = new double[3];
+			double[] result1 = new double[2]; 
+			result = Fomula(Data);
+			result1 = learningfomual(result);
+			double b = 0;
+			double Decide = 1/(1+Math.exp(-(result1[0]*point+result1[1])));
+			if(Decide > 0.5) System.out.println("Like");
+			else System.out.println("Hate");
+		}
+		
 }

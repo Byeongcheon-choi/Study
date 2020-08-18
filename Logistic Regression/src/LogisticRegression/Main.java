@@ -1,4 +1,4 @@
-package LinearRegression;
+package LogisticRegression;
 
 
 import org.jfree.chart.ChartFactory;
@@ -46,8 +46,8 @@ public class Main extends ApplicationFrame {
 		   
 	       plot.setDataset(0, scatterPlotDataset);
 	       plot.setRenderer(0, new XYLineAndShapeRenderer(false, true));
-	       plot.setDomainAxis(0, new NumberAxis("Age"));
-	       plot.setRangeAxis(0, new NumberAxis("Number of Thumbs up"));
+	       plot.setDomainAxis(0, new NumberAxis("Data"));
+	       plot.setRangeAxis(0, new NumberAxis("Favorability"));
 	       plot.mapDatasetToDomainAxis(0, 0);
 	       plot.mapDatasetToRangeAxis(0, 0);
 

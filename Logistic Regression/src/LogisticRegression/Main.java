@@ -1,4 +1,4 @@
-package LogisticRegression;
+package LinearRegression;
 
 
 import org.jfree.chart.ChartFactory;
@@ -26,13 +26,13 @@ import java.util.Map.Entry;
 public class Main extends ApplicationFrame {
 
 	private final int Fnumber = 10;
-	Map<Integer,Integer> Data = new HashMap<>();
-	private final int interator = 100;
-	private final int point = 5;
+	Map<Double,Double> Data = new HashMap<>();
+	private final int interator = 5000;
+	private final int point = 15;
 	
 	public static void main(final String[] args) {
 		
-		   Main demo = new Main("K-nearest Neighbors");
+		   Main Testing = new Main("Logistic Regression");
 		
 		}
 
@@ -71,8 +71,8 @@ public class Main extends ApplicationFrame {
 			
 			for(int index =0 ; index < Fnumber ; index++)
 			   {
-				   int s = index;
-				   int j = 0;
+				   double s = index;
+				   double j = 0;
 				  
 				   Data.put(s,j);
 				   dataset.add(s,j);
@@ -81,15 +81,15 @@ public class Main extends ApplicationFrame {
 			
 			for(int index =10 ; index < Fnumber+10 ; index++)
 			   {
-				   int s = index;
-				   int j = 1;
+				double s = index;
+				double j = 1;
 				
 				   Data.put(s,j);
 				   dataset1.add(s,j);
 			   }
 			data.addSeries(dataset1);
 			
-//			dataset2.add(point,Fomula(Data,point));
+			dataset2.add(point,result(Data,point));
 			data.addSeries(dataset2);
 			return data;
 		}			
@@ -104,7 +104,16 @@ public class Main extends ApplicationFrame {
 			double sum = 0;
 			for(int i = 0; i< 20; i++)
 			{
-				sum += a[i] + b[i];
+				sum += a[i] * b[i];
+			}
+			return sum;
+		}
+		public double Dotproduct(double[] a, double b)
+		{
+			double sum = 0;
+			for(int i = 0; i< 20; i++)
+			{
+				sum += a[i] * b;
 			}
 			return sum;
 		}
@@ -118,25 +127,25 @@ public class Main extends ApplicationFrame {
 			return result;
 			
 		}
+		public double[] DrivateCalculator(double a, double[] b) {
+			double[] result = new double[20];
+			for(int n = 0; n< 20;n++)
+			{
+				result[n] = b[n] - a;
+			}
+			
+			return result;
+			
+		}
 		
-		public double[] Fomula(Map<Integer, Integer> Data){
-				double a[] = new double[20];
-				double b = 0;
+		public double[] Fomula(double[] x, double[] y, double[] a, double b){
 				int number = 20;
-				double[] x = new double[20];
-				double[] y = new double[20];
 				double[] p = new double[20];
 				double[] result = new double[3];
 				double da = 0;
 				double db =0;
 				
-				for(Entry<Integer,Integer> arr : Data.entrySet())
-				{
-					int i =0;
-					x[i] = arr.getKey();
-					y[i] = arr.getValue();
-					i++;
-				}
+				
 				double F_result = Sigmoid(Dotproduct(x,a)+b);
 				double cost = 0;
 				double sum1 = 0;
@@ -146,7 +155,7 @@ public class Main extends ApplicationFrame {
 				}
 				
 				cost = - sum1/number;
-				
+				System.out.println(cost);
 				
 				da = Dotproduct(x, YtransCalculator(F_result,y)) / number;
 				p = YtransCalculator(F_result,y);
@@ -163,33 +172,56 @@ public class Main extends ApplicationFrame {
 				return result;
 						
 		}
-		public double[] learningfomual(double[] result) {
-			double w = 0;
-			double b = 0;
+		public double[][] learningfomual(double[] x, double[] y, double[] a, double b) {	
+			double value[] = new double[3];
+			double da[] = new double[20];
+			double db = 0;
+			double F_b[] = new double[1];
+			for(Entry<Double,Double> arr : Data.entrySet())
+			{
+				int i =0;
+				x[i] = arr.getKey();
+				y[i] = arr.getValue();
+				i++;
+			}
+			
 			for(int k =0; k < interator ; k++) {
-				double value[] = new double[3];
-				value = Fomula(Data);
 				
+				value = Fomula(x, y,da,db);
 				
-				w = w -(0.0001*value[0]);
-				b = b -(0.0001*value[1]);
+				da = DrivateCalculator(0.0001*value[0],da);
+				System.out.println(a);
+				db = db -(0.0001*value[1]);
 				
 			}
-			double[] equ = new double[2];
-			equ[0] = w;
-			equ[1] = b;
-			return equ;
+			F_b[0] = db;
+			double result[][] = {a,F_b};
+			
+			return result;
+			
 		}
 		
-		public void result(Map<Integer, Integer> Data, int point) {
-			double[] result = new double[3];
-			double[] result1 = new double[2]; 
-			result = Fomula(Data);
-			result1 = learningfomual(result);
+		public double result(Map<Double, Double> Data, double point) {
+			double[] x = new double[20];
+			double[] y = new double[20];
+			double a[] = new double[20];
 			double b = 0;
-			double Decide = 1/(1+Math.exp(-(result1[0]*point+result1[1])));
-			if(Decide > 0.5) System.out.println("Like");
-			else System.out.println("Hate");
+			
+			for(Entry<Double,Double> arr : Data.entrySet())
+			{
+				int i =0;
+				x[i] = arr.getKey();
+				y[i] = arr.getValue();
+				i++;
+			}
+			
+			double[][] F_re = learningfomual(x,y,a,b);
+			
+			
+			double Decide = 1/(1+Math.exp(-(Dotproduct(F_re[0], point +F_re[1][0]))));
+			if(Decide > 0.5) System.out.println(Decide + "Like");
+			else System.out.println(Decide + "Hate");
+			return Decide;
 		}
 		
 }

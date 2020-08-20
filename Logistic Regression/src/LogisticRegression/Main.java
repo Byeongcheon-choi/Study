@@ -1,4 +1,4 @@
-package LinearRegression;
+package project;
 
 
 import org.jfree.chart.ChartFactory;
@@ -23,22 +23,22 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class Main extends ApplicationFrame {
+public class LogisticRegression extends ApplicationFrame {
 
 	private final int Fnumber = 10;
 	ArrayList<Double> Xdata = new ArrayList<Double>();
 	ArrayList<Double> Ydata = new ArrayList<Double>();
-	private final double error = 0.01;
-	private final int interator = 100;
-	private final int point = 18;
+	private final double error = 0.00001;
+	private final int iteration = 1000;
+	private final int point = 5;
 	
 	public static void main(final String[] args) {
 		
-		   Main Testing = new Main("Logistic Regression");
+		LogisticRegression Testing = new LogisticRegression("Logistic Regression");
 		
 		}
 
-		public Main(String title) {
+		public LogisticRegression(String title) {
 		
 		   super(title);
 
@@ -71,7 +71,7 @@ public class Main extends ApplicationFrame {
 			XYSeries dataset2 = new XYSeries("Sample");
 			
 			
-			for(int index =-10 ; index < 0 ; index++)
+			for(int index =0 ; index < 10 ; index++)
 			   {
 				   double s = index;
 				   double j = -1;
@@ -124,43 +124,37 @@ public class Main extends ApplicationFrame {
 //			}
 //			return sum;
 //		}
+//		public double Dotproduct(double a, double b)
+//		{
+//			return a*b;
+//		}
 		
-		public double Dotproduct(double a, double b)
-		{
-			return a*b;
-		}
-		double[] a = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};  //Initialize the weight.
-		double[] b = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-		public double Fomula(double[] x, double[] y){
-			double cost = 0;
-			double sum = 0;
-			double dax =0; 
-			for (int n = 0; n < interator; n++) {
-			
-				for(int i =0 ; i< x.length ; i++)
-				{
-					sum =0;
-					cost = 0;
-					dax = Sigmoid(Dotproduct(x[i],a[i]))+b[i];
-					
-					double diff = y[i] - dax;
-					
-					a[i] = a[i] + error *x[i]*diff;
-					cost += y[i]*Math.log(dax) +(1-y[i])*Math.log(1-dax);
-
-					System.out.println(cost);
-
-				}
+		
+		double a = 0.8;  //Initialize the weight.
+		double b = 0.4;
+		public double Fomula(double[] x, double[] y, double point){
+			double delta = Math.exp(-7);
 				
-				
-			}
-			double result = 0;
-			for(int k =0; k < x.length ; k++)
+		
+			for(int k =0; k< iteration ; k++)
 			{
-				result += a[k]*point;
+				double dw = 0;
+				double db = 0;
+				double COST = 0;
+				for(int i = 0; i< x.length; i++)
+				{
+					double z = Sigmoid(x[i]*a+b);
+					COST += (y[i]*Math.log(z+delta) + (1-y[i]*Math.log((1-z)+delta)));
+					
+					dw += (y[i]-z)*x[i];
+					db += (y[i]-z);
+				}
+				a -= error*dw;
+				b -= error*db;
+				System.out.println(a+"   "+b+ "   "+ COST);
 			}
-			return result; 
 			
+			return Sigmoid(point*a+b);
 		}
 		
 		public double result(double point) {
@@ -182,7 +176,7 @@ public class Main extends ApplicationFrame {
 			
 			}
 			
-			double F_re = Fomula(x,y);
+			double F_re = Fomula(x,y,point);
 			
 			if(F_re > 0.5) System.out.println(F_re + "Like");
 			else System.out.println(F_re + "Hate");

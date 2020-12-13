@@ -5,17 +5,17 @@
 # Output : Prints the result of the preorder traversal in the first line, the inorder traversal in the second line, and the postorder traversal in the third line. Print N letters on each line without spaces
 
 # EX)
-Input :
-7
-A B C
-B D .
-C E F
-E . .
-F . G
-D . .
-G . .
+#Input :
+#7
+#A B C
+#B D .
+#C E F
+#E . .
+#F . G
+#D . .
+#G . .
 
-output :
-ABDCEFG
-DBAECFG
-DBEGFCA
+#output :
+#ABDCEFG
+#DBAECFG
+#DBEGFCA

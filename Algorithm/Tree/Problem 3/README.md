@@ -6,8 +6,8 @@ First, a vertex number is given, followed by two integers indicating information
 ### Output : Print the tree diameter on the first line.
 
 ##### EX)
-##### input :				output:
-##### 5						11
+##### input :				                output:
+##### 5						                          11
 ##### 1 3 2 -1
 ##### 2 4 4 -1
 ##### 3 1 2 4 3 -1

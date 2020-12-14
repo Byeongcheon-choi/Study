@@ -6,10 +6,13 @@ First, a vertex number is given, followed by two integers indicating information
 ### Output : Print the tree diameter on the first line.
 
 ##### EX)
-##### input :				                ##### output:
-##### 5						                  #####        11
+##### input :				               
+##### 5						                 
 ##### 1 3 2 -1
 ##### 2 4 4 -1
 ##### 3 1 2 4 3 -1
 ##### 4 2 4 3 3 5 6 -1
 ##### 5 4 6 -1
+
+ ##### output:
+ #####        11

@@ -3,7 +3,9 @@
 ### Output : When the node given as input is deleted from the tree given as input on the first line, the number of leaf nodes is output.
 
 ##### EX)
-##### INPUT:                         OUTPUT :
+##### INPUT:                         
 ##### 5
-##### -1 0 0 1 1                              2
+##### -1 0 0 1 1                              
 ##### 2
+OUTPUT :
+2

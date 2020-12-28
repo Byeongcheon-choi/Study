@@ -7,23 +7,23 @@ using namespace std;
 #define MAX 40002
 
 vector<pair<int, int>> v[MAX];
-queue<pair<int, int>> tree;
 bool pass[MAX];
 int Totallength[MAX];
 
 int bfs(vector<pair<int, int>> v[MAX], int start, int finish) {
 	memset(Totallength, 0, sizeof(Totallength));
 	memset(pass, false, sizeof(pass));
+	queue<pair<int, int>> tree;
 	pass[start] = true;
 	tree.push(make_pair(start,0));
 
 	while (!tree.empty()) {
 		int point = tree.front().first;
 		int length = tree.front().second;
-
+		if(point == finish) break;
 		tree.pop();
 		for (pair<int,int> k : v[point]) {
-			if (!pass[k.first] && k.second != finish) {
+			if (!pass[k.first]) {
 				pass[k.first] = true;
 				Totallength[k.first] = length + k.second;
 				tree.push(make_pair(k.first, length + k.second));

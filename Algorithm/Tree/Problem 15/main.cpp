@@ -1,83 +1,91 @@
-#include <cstdio>
+#include <iostream>
 #include <vector>
-#include <cstring>
 #include <algorithm>
 
 using namespace std;
+#define MAX 10000
 
-const int INC = 1, N_INC = 2;
-vector<int> ans;
-short choice[10003];
+vector<int> v[MAX];
+vector<int> re;
 
-class P {
-public :
-    int inc, n_inc;
+class NODE {
+public:
+	int accept, nonaccept;
 };
 
-P dfs(vector<int> G[], P arr[], int v, bool visited[]) { 
-    visited[v] = true;
-    for(int adj:G[v]) { 
-        if(!visited[adj]) {
-            P tmp = dfs(G,arr,adj,visited);
-            arr[v].inc += tmp.n_inc;
-            arr[v].n_inc += max(tmp.n_inc, tmp.inc);
-        
-            if (arr[adj].inc > arr[adj].n_inc) choice[adj] = INC;
-            else choice[adj] = N_INC;
+bool pass1[MAX] , pass2[MAX], c[MAX];
 
-        }
-    }
-    return arr[v];
+NODE DFS(NODE* ex, vector<int> v[MAX], int start) {
+	pass1[start] = true;
+	for (int x : v[start]) {
+		if (!pass1[x]) {
+			NODE t = DFS(ex, v, x);
+			ex[start].accept += t.nonaccept;
+			ex[start].nonaccept += max(t.nonaccept, t.accept);
+
+			if (ex[start].accept > ex[start].nonaccept) c[start] = true;
+			else c[start] = false;
+		}
+	}
+
+	return ex[start];
 }
 
-void chosen(vector<int> G[], bool visited[], int cur, int Choice) {
+void result(vector<int> v[MAX], int top, bool select);
 
-    visited[cur] = true;
-    if (Choice == INC) {
-        ans.push_back(cur);
-        for (auto next : G[cur]) {
-            if(!visited[next]) chosen(G, visited, next, N_INC); /
-        }
-    } else { 
-        for(auto next : G[cur])
-            if(!visited[next]) chosen(G, visited, next, choice[next]);
-           
-    }
+int main(void) {
+	int num;
+	cin >> num;
+
+	NODE *ex = new NODE[num];
+
+	for (int i = 0; i < num; i++) {
+		int w;
+		cin >> w;
+
+		ex[i].accept = w;
+	}
+
+	for (int j = 0; j < num - 1; j++) {
+		int a, b;
+		cin >> a >> b;
+		v[a].push_back(b);
+		v[b].push_back(a);
+	}
+
+	DFS(ex, v, 1);
+
+	if (ex[1].accept > ex[1].nonaccept) {
+		cout << ex[1].accept;
+		result(v, 1, true);
+	}
+	else
+	{
+		cout << ex[1].nonaccept;
+		result(v, 1, false);
+	}
+	sort(re.begin(), re.end());
+	for (int d : re) {
+		cout << d << " ";
+	}
+	return 0;
 }
 
-int main() {
-    int N;
-    cin >> N;
-  
-    P arr[N+1];
-    for(int i=1;i<=N;++i)
-        arr[i] = {1,0};
-    
-    for(int i=1;i<=N;++i)
-        cin >> arr[i].inc;
-    
-    vector<int> G[N+1];
-    
-    for(int i=0;i<N-1;++i) {
-        int u, v;
-        cin >> u >> v;
-        G[u].push_back(v);
-        G[v].push_back(u);
-    }
-
-    bool visited[N+1];
-    memset(visited,0, sizeof(visited));
-
-    dfs(G,arr,1,visited); 
-
-    memset(visited,0, sizeof(visited));
-    
-    if (arr[1].inc > arr[1].n_inc) 
-        chosen(G,visited,1,INC);
-    else
-        chosen(G,visited,1,N_INC);
-    cout << max(arr[1].inc, arr[1].n_inc) << endl;
-    sort(ans.begin(),ans.end());
-    for(auto e:ans)
-        cout << e << ' ';
+void result(vector<int> v[MAX], int top, bool select) {
+	pass2[top] = true;
+	if (select) {
+		re.push_back(top);
+		for (int k : v[top]) {
+			if (!pass2[k]) {
+				result(v, k, c[k]);
+			}
+		}
+	}
+	else {
+		for (int h : v[top]) {
+			if (!pass2[h]) {
+				result(v, h, c[h]);
+			}
+		}
+	}
 }

@@ -39,8 +39,8 @@ int main(void) {
 			cin >> list2[k];
 		}
 		
+		cout << 'answer : ';
 		tree(0, node, 0);
-		cout << '\n';
 	}
 
 	return 0;

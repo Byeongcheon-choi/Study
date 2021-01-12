@@ -1,83 +1,61 @@
 #include <iostream>
+#include <vector>
+
+#define MAX 10002
+
+int node[MAX];
 
 using namespace std;
 
-class Node{
+vector<int> v[MAX];
+bool pass[MAX];
+bool choice[MAX];
+
+class NODE {
 public:
-    char data;
-    Node *L, *R;
-    Node(char Init)
-    {
-        data = Init;
-        L = NULL;
-        R = NULL;
-    }
+	int inclu, noclud;
 };
-void Start(Node *n, char mid, char left, char right)
-{
-    if(n == NULL) return;
-    
-    if(n->data != mid)
-    {
-        Start(n->L, mid, left, right);
-        Start(n->R, mid, left, right);
-    }
-    else{
-        n->L = new Node(left);
-        n->R = new Node(right);
-        return;
-    }
-    
-}
-void result1(Node *n) {
-    if (n == NULL || n->data == NULL) return;
-    cout << n->data;
-    result1(n->L);
-    result1(n->R);
-}
-void result2(Node *n) {
-    if (n == NULL || n->data == NULL) return;
-    result2(n->L);
-    cout << n->data;
-    result2(n->R);
-}
-void result3(Node *n) {
-    if (n == NULL || n->data == NULL) return;
-    result3(n->L);
-    result3(n->R);
-    cout << n->data;
+
+NODE tree(NODE * ex, int start) {
+	pass[start] = true;
+	for (int brige : v[start]) {
+		if (!pass[brige])
+		{
+			NODE temp = tree(ex, start);
+			ex[start].inclu += temp.noclud;
+			ex[start].noclud += max(temp.inclu, temp.noclud);
+
+			if (temp.inclu > temp.noclud) choice[brige] = true;
+		}
+	}
+	return ex[start];
 }
 
-int main(){
-    Node *n = new Node(NULL);
-    int number;
-    cin >> number;
-    
-    for(int i =0; i < number ; i++){
-        char mid, left,right;
-        cin >> mid >> left >> right;
-        
-        if (left == '.') left = NULL;
-        
-        if (right == '.') right = NULL;
-        
-        if (n->data == NULL) {
-            n->data = mid;
-            n->L = new Node(left);
-            n->R = new Node(right);
-        }
-        else
-        {
-            Start(n,mid,left,right);
-        }
-    }
-    
-    result1(n);
-    cout << endl;
-    result2(n);
-    cout << endl;
-    result3(n);
-    cout << endl;
-    
-    return 0;
+
+
+int main(void) {
+	int num;
+	cin >> num;
+	NODE* init = new NODE[num];
+	memset(pass, false, sizeof(pass));
+	memset(choice, false, sizeof(pass));
+
+	for (int i = 0; i < num; i++) {
+		cin >> node[i];
+	}
+
+	for (int k = 0; k < num - 1; k++) {
+		int a, b;
+		cin >> a >> b;
+		v[a].push_back(b);
+		v[b].push_back(a);
+	}
+
+	tree(init,1);
+	int summ = 0;
+	for (int result = 0; result < num; result++) {
+		if (choice[result]) summ += node[result];
+	}
+	cout << summ;
+	return 0;
 }

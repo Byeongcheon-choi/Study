@@ -135,3 +135,9 @@ INNER JOIN temp87
 ON ratings.movieid = temp87.movieid;
 
 
+---------------------------------------------------
+
+CREATE TABLE query9 (movieid, rating) 
+AS SELECT ratings.movieid, ratings.rating
+FROM ratings
+WHERE ratings.userid = :v1

@@ -140,4 +140,30 @@ ON ratings.movieid = temp87.movieid;
 CREATE TABLE query9 (movieid, rating) 
 AS SELECT ratings.movieid, ratings.rating
 FROM ratings
-WHERE ratings.userid = :v1
+WHERE ratings.userid = :v1;
+
+---------------------------------------------------------------------------
+
+SELECT movieid, avg(rating) 
+INTO temp101
+FROM ratings
+GROUP BY movieid;
+
+
+CREATE TABLE temp102 AS TABLE temp101;
+
+
+
+CREATE TABLE SIM1 (movieid1, movieid2, sim, rating, title) 
+AS SELECT temp101.movieid, temp102.movieid, (1 - (abs(temp101.avg - temp102.avg) / 5)), query9.rating, movies.title
+FROM temp101, temp102, query9, movies
+WHERE temp101.movieid NOT IN (SELECT movieid FROM query9)
+	AND temp101.movieid = movies.movieid 
+	AND temp102.movieid IN (SELECT movieid FROM query9)
+	AND temp102.movieid = query9.movieid;
+
+CREATE TABLE recommendation (title) 
+AS SELECT SIM1.title
+FROM SIM1
+GROUP BY title, movieid1
+HAVING (sum (SIM1.sim * SIM1.rating) / sum (SIM1.sim)) > 3.9;
